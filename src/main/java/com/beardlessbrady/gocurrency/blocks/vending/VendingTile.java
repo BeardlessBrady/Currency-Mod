@@ -52,7 +52,7 @@ public class VendingTile extends TileEntity implements INamedContainerProvider, 
         if(world.isRemote){
       //      System.out.println("CLIENT: " + vendingStateData.get(VendingStateData.MODE_INDEX));
         } else {
-         //   System.out.println("SERVER: " + vendingStateData.get(VendingStateData.MODE_INDEX));
+      //      System.out.println("SERVER: " + vendingStateData.get(VendingStateData.MODE_INDEX));
         }
     }
 
@@ -78,9 +78,19 @@ public class VendingTile extends TileEntity implements INamedContainerProvider, 
 
     @Nullable
     @Override
+    // Server side creation of Container
     public Container createMenu(int windowID, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-        return new VendingContainer(windowID, playerInventory, stockContents, inputContents, outputContents, vendingStateData);
+        return VendingContainer.createContainerServer(windowID, playerInventory, stockContents, inputContents, outputContents, vendingStateData, this);
     }
+
+    public int getVendingStateData(int index){
+        return vendingStateData.get(index);
+    }
+
+    public void setVendingStateData(int index, int value){
+        this.vendingStateData.set(index, value);
+    }
+
 
     // ---- NBT Stuff ----
     private final String STOCK_SLOTS_NBT = "stockSlots";

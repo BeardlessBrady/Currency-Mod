@@ -1,6 +1,6 @@
 package com.beardlessbrady.gocurrency.init;
 
-import com.beardlessbrady.gocurrency.handlers.ConfigHandler;
+import com.beardlessbrady.gocurrency.ConfigHandler;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

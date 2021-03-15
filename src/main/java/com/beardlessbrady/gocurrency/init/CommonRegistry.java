@@ -46,7 +46,7 @@ public class CommonRegistry {
 
     // Containers
     public static final RegistryObject<ContainerType<VendingContainer>> CONTAINER_VENDING = CONTAINERS.register("vending_con", () ->
-            IForgeContainerType.create(VendingContainer::new));
+            IForgeContainerType.create(VendingContainer::createContainerClient));
 
     /**
      * Initializes registry

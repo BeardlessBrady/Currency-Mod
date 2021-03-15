@@ -2,10 +2,10 @@ package com.beardlessbrady.gocurrency;
 
 import com.beardlessbrady.gocurrency.init.ClientRegistry;
 import com.beardlessbrady.gocurrency.init.CommonRegistry;
-import com.beardlessbrady.gocurrency.handlers.ConfigHandler;
 import com.beardlessbrady.gocurrency.init.GenerateResourcePack;
 import com.beardlessbrady.gocurrency.init.ModItemGroup;
 import com.beardlessbrady.gocurrency.items.CurrencyItem;
+import com.beardlessbrady.gocurrency.network.NetworkHandler;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,11 +35,15 @@ public class GOCurrency {
     public static final ItemGroup
             GOC_ITEM_GROUP = new ModItemGroup(MODID, () -> CurrencyItem.getTabItem());
 
+    public static final NetworkHandler NETWORK_HANDLER = new NetworkHandler();
+
     public GOCurrency() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+
+        NETWORK_HANDLER.register();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_SPEC);
 

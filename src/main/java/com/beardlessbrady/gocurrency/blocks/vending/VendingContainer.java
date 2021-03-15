@@ -6,9 +6,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.world.World;
 
 /**
@@ -61,39 +63,49 @@ public class VendingContainer extends Container {
     // and vending: input slots 0 - 2, output slots 0, stock slots 0 - 16 (for 1x2)
 
     private VendingStateData vendingStateData;
+    private VendingTile tile;
 
-    // Client side Creation
-    public VendingContainer(int windowID, PlayerInventory playerInventory, PacketBuffer extraData) {
-        super(CommonRegistry.CONTAINER_VENDING.get(), windowID);
-        if( CommonRegistry.CONTAINER_VENDING.get() == null)
-            throw new IllegalStateException("Must initialise containerTypeVendingContainer before constructing a ContainerVending!");
-
-        // Dummys for client
-        this.vendingStateData = new VendingStateData();
+    public static VendingContainer createContainerClient(int windowID, PlayerInventory playerInventory, PacketBuffer extraData) {
+       VendingStateData vendingStateData = new VendingStateData();
         VendingContents input = new VendingContents(INPUT_SLOTS_COUNT);
         VendingContents output = new VendingContents(OUTPUT_SLOTS_COUNT);
         VendingStockContents stock = new VendingStockContents(STOCK_SLOT_COUNT);
 
-        generateSlots(playerInventory, stock, input, output, playerInventory);
+        VendingTile tile = (VendingTile) playerInventory.player.world.getTileEntity(extraData.readBlockPos());
+
+        return new VendingContainer(windowID, playerInventory, stock, input, output, vendingStateData, tile);
     }
 
-    // Server side Creation
-    public VendingContainer(int windowID, PlayerInventory playerInventory, VendingStockContents stock, VendingContents input, VendingContents output, VendingStateData vendingStateData){
+    public static VendingContainer createContainerServer(int windowID, PlayerInventory playerInventory, VendingStockContents stock, VendingContents input, VendingContents output, VendingStateData vendingStateData, VendingTile tile) {
+        return new VendingContainer(windowID, playerInventory, stock, input, output, vendingStateData, tile);
+    }
+
+    public VendingContainer(int windowID, PlayerInventory playerInventory, VendingStockContents stock, VendingContents input, VendingContents output, VendingStateData vendingStateData, VendingTile tile) {
         super(CommonRegistry.CONTAINER_VENDING.get(), windowID);
         if( CommonRegistry.CONTAINER_VENDING.get() == null)
             throw new IllegalStateException("Must initialise containerTypeVendingContainer before constructing a ContainerVending!");
 
-        this.vendingStateData = vendingStateData;
-        trackIntArray(vendingStateData); // Tells vanilla to track stateData and keep synchronized between client and server containers!!
-
-        generateSlots(playerInventory, stock, input, output, playerInventory);
-    }
-
-    private void generateSlots(PlayerInventory invPlayer, VendingStockContents stock, VendingContents input, VendingContents output, PlayerInventory playerInventory){
         this.stockContents = stock;
         this.inputContents = input;
         this.outputContents = output;
+        this.vendingStateData = vendingStateData;
         this.world = playerInventory.player.world;
+        this.tile = tile;
+
+        trackIntArray(this.vendingStateData);
+
+        generateSlots(playerInventory, stock, input, output);
+    }
+
+    public VendingTile getTile(){
+        return this.tile;
+    }
+
+        private void generateSlots(PlayerInventory invPlayer, VendingStockContents stock, VendingContents input, VendingContents output){
+        this.stockContents = stock;
+        this.inputContents = input;
+        this.outputContents = output;
+        this.world = invPlayer.player.world;
 
         final int SLOT_X_SPACING = 18;
         final int SLOT_Y_SPACING = 18;
@@ -142,6 +154,8 @@ public class VendingContainer extends Container {
 
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
+        vendingStateData.set(0, 1);
+
         try {
             System.out.println(slotId + " " + dragType + " " + clickTypeIn);
             if ((slotId >= PLAYER_INVENTORY_FIRST_SLOT_INDEX && //PLAYER INVENTORY

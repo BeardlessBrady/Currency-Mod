@@ -1,7 +1,6 @@
-package com.beardlessbrady.gocurrency.handlers;
+package com.beardlessbrady.gocurrency;
 
 
-import com.beardlessbrady.gocurrency.GOCurrency;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

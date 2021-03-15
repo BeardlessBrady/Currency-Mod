@@ -1,5 +1,7 @@
 package com.beardlessbrady.gocurrency.blocks.vending;
 
+import com.beardlessbrady.gocurrency.GOCurrency;
+import com.beardlessbrady.gocurrency.network.MessageVendingStateData;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -39,14 +41,12 @@ public class VendingContainerScreen extends ContainerScreen<VendingContainer> {
 
         addButton(new Button(50, 50, 10, 10,
                 new TranslationTextComponent("gui.gocurrency.vending_" + vendingContainer.getVendingStateData(VendingStateData.MODE_INDEX)), (button) -> {
-            int mode = vendingContainer.getVendingStateData(VendingStateData.MODE_INDEX);
-
-            if(mode == 1){
-               // vendingContainer.setVendingStateData(VendingStateData.MODE_INDEX, 0);
-            } else {
-               // vendingContainer.setVendingStateData(VendingStateData.MODE_INDEX, 1);
-            }
+            handle(VendingStateData.MODE_INDEX);
         }));
+    }
+
+    private void handle(int i){
+        GOCurrency.NETWORK_HANDLER.sendToServer(new MessageVendingStateData(container.getTile().getPos(), i));
     }
 
     @Override
