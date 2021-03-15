@@ -46,7 +46,8 @@ public class VendingContainerScreen extends ContainerScreen<VendingContainer> {
     }
 
     private void handle(int i){
-        GOCurrency.NETWORK_HANDLER.sendToServer(new MessageVendingStateData(container.getTile().getPos(), i));
+        container.setVendingStateData(0, container.getVendingStateData(0) == 0 ? 1 : 0);
+       // GOCurrency.NETWORK_HANDLER.sendToServer(new MessageVendingStateData(container.getTile().getPos(), i));
     }
 
     @Override

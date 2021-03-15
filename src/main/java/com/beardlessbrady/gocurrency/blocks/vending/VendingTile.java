@@ -50,7 +50,7 @@ public class VendingTile extends TileEntity implements INamedContainerProvider, 
     @Override
     public void tick() {
         if(world.isRemote){
-      //      System.out.println("CLIENT: " + vendingStateData.get(VendingStateData.MODE_INDEX));
+      //\\      System.out.println("CLIENT: " + vendingStateData.get(VendingStateData.MODE_INDEX));
         } else {
       //      System.out.println("SERVER: " + vendingStateData.get(VendingStateData.MODE_INDEX));
         }

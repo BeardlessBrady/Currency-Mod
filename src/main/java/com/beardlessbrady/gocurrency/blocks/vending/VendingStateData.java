@@ -53,9 +53,8 @@ public class VendingStateData implements IIntArray {
         switch (index){
             case MODE_INDEX:
                 System.out.println("BEFORE: " + mode);
-                mode = 1;
+                mode = value;
                 System.out.println("AFTER: " + mode);
-                //mode = value;
                 break;
             case STOREDCASH_INDEX:
                 storedCash = value;

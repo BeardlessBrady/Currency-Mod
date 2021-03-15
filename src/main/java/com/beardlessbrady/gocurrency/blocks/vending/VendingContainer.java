@@ -101,7 +101,14 @@ public class VendingContainer extends Container {
         return this.tile;
     }
 
-        private void generateSlots(PlayerInventory invPlayer, VendingStockContents stock, VendingContents input, VendingContents output){
+    private void generateSlots(PlayerInventory invPlayer, VendingStockContents stock, VendingContents input, VendingContents output){
+        if(world.isRemote){
+            System.out.println("CLIENT: " + vendingStateData.get(VendingStateData.MODE_INDEX));
+        } else {
+            System.out.println("SERVER: " + vendingStateData.get(VendingStateData.MODE_INDEX));
+        }
+
+
         this.stockContents = stock;
         this.inputContents = input;
         this.outputContents = output;
@@ -232,6 +239,12 @@ public class VendingContainer extends Container {
 
     public void setVendingStateData(int index, int value){
         this.vendingStateData.set(index, value);
+
+        if(world.isRemote){
+            System.out.println("CLIENT: " + vendingStateData.get(VendingStateData.MODE_INDEX));
+        } else {
+            System.out.println("SERVER: " + vendingStateData.get(VendingStateData.MODE_INDEX));
+        }
     }
 
     private enum SlotZones {
